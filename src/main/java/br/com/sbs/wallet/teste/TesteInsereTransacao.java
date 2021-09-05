@@ -1,5 +1,6 @@
 package br.com.sbs.wallet.teste;
 
+import br.com.sbs.wallet.dao.TransacaoDao;
 import br.com.sbs.wallet.modelo.TipoTransacao;
 import br.com.sbs.wallet.modelo.Transacao;
 
@@ -14,23 +15,15 @@ public class TesteInsereTransacao {
         String url = "jdbc:mysql://localhost:3306/walletDb";
         String usuario = "root";
         String senha = "Alura@123";
-        try {
-            Connection connection = DriverManager.getConnection(url, usuario, senha);
-            Transacao transacao1 = new Transacao(LocalDate.of(2021, 7, 1), new BigDecimal(99.99), 110, "XPTO1", TipoTransacao.COMPRA);
 
-            String sql = "INSERT INTO transacoes (data, preco, quantidade, ticker, tipoTransacao) VALUES (?, ?, ?, ?, ?)";
+        try (Connection connection = DriverManager.getConnection(url, usuario, senha)) {
+            TransacaoDao transacaoDao = new TransacaoDao(connection);
+            Transacao xpyo1 = new Transacao(LocalDate.now(), new BigDecimal(25.0), 15, "XPYO1", TipoTransacao.VENDA);
+            transacaoDao.cadastrar(xpyo1);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setDate(1, Date.valueOf(transacao1.getData()));
-            preparedStatement.setBigDecimal(2, transacao1.getPreco());
-            preparedStatement.setInt(3, transacao1.getQuantidade());
-            preparedStatement.setString(4, transacao1.getTicker());
-            preparedStatement.setString(5, transacao1.getTipoTransacao().toString());
-
-            preparedStatement.execute();
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao conectar");
+        } catch (SQLException throwables) {
+            throw new RuntimeException(throwables);
         }
+
     }
 }
