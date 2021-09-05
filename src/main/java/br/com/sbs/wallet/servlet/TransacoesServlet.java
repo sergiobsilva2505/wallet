@@ -9,6 +9,7 @@ import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,18 +19,41 @@ public class TransacoesServlet extends HttpServlet {
     private List<Transacao> transacoes = new ArrayList<>();
 
     @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        Transacao transacao1 = new Transacao("ITSA4", new BigDecimal(10.0), 100, LocalDate.now(), TipoTransacao.COMPRA);
-        Transacao transacao2 = new Transacao("BBSE3", new BigDecimal(23.50), 20, LocalDate.of(2021, 2,1), TipoTransacao.COMPRA);
-        transacoes.add(transacao1);
-        transacoes.add(transacao2);
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("transacoes", transacoes);
 
         request.getRequestDispatcher("WEB-INF/views/transacoes.jsp")
                 .forward(request, response);
+    }
 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+
+            String ticker = request.getParameter("ticker");
+            LocalDate data = LocalDate.parse(
+                    request.getParameter("data"),
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            BigDecimal preco = new BigDecimal(
+                    request.getParameter("preco").replace(",",".")) ;
+            int quantidade = Integer.parseInt(request.getParameter("quantidade"));
+
+            TipoTransacao tipo = TipoTransacao.valueOf(request.getParameter("tipo"));
+
+            Transacao transacao = new Transacao(
+                    data,
+                    preco,
+                    quantidade,
+                    ticker,
+                    tipo);
+            transacoes.add(transacao);
+
+            response.sendRedirect("transacoes");
+
+        } catch (NumberFormatException e) {
+            response.sendRedirect("transacoes?erro=campo invalido!");
+        }
 
     }
+
 }

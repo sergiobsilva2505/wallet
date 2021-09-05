@@ -6,17 +6,17 @@ import java.time.format.DateTimeFormatter;
 
 public class Transacao {
 
-    private String ticker;
+    private LocalDate data;
     private BigDecimal preco;
     private Integer quantidade;
-    private LocalDate data;
+    private String ticker;
     private TipoTransacao tipoTransacao;
 
-    public Transacao(String ticker, BigDecimal preco, Integer quantidade, LocalDate data, TipoTransacao tipoTransacao) {
-        this.ticker = ticker;
+    public Transacao(LocalDate data, BigDecimal preco, Integer quantidade, String ticker, TipoTransacao tipoTransacao) {
+        this.data = data;
         this.preco = preco;
         this.quantidade = quantidade;
-        this.data = data;
+        this.ticker = ticker;
         this.tipoTransacao = tipoTransacao;
     }
 
