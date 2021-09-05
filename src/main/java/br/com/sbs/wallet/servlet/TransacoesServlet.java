@@ -40,12 +40,7 @@ public class TransacoesServlet extends HttpServlet {
 
             TipoTransacao tipo = TipoTransacao.valueOf(request.getParameter("tipo"));
 
-            Transacao transacao = new Transacao(
-                    data,
-                    preco,
-                    quantidade,
-                    ticker,
-                    tipo);
+            Transacao transacao = new Transacao(data, preco, quantidade, ticker, tipo);
             transacoes.add(transacao);
 
             response.sendRedirect("transacoes");
